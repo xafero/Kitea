@@ -2,6 +2,9 @@ package com.xafero.kitea.collections.impl;
 
 import java.util.Collection;
 
+import com.xafero.kitea.collections.api.ModificationEvent;
+import com.xafero.kitea.collections.api.ModificationKind;
+
 public class ObservableCollection<T> extends ObservableIterable<T> implements Collection<T> {
 
 	protected final Collection<T> collection;
@@ -13,20 +16,27 @@ public class ObservableCollection<T> extends ObservableIterable<T> implements Co
 
 	@Override
 	public boolean add(T e) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean added = collection.add(e);
+		if (added)
+			fireModificationListeners((new ModificationEvent<T>(this)).kind(ModificationKind.Add).item(e));
+		return added;
 	}
 
 	@Override
 	public boolean addAll(Collection<? extends T> c) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean added = true;
+		for (T item : c)
+			added = added && add(item);
+		return added;
 	}
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
-
+		@SuppressWarnings("unchecked")
+		T[] copy = (T[]) collection.toArray();
+		collection.clear();
+		for (T item : copy)
+			fireModificationListeners((new ModificationEvent<T>(this)).kind(ModificationKind.Remove).item(item));
 	}
 
 	@Override
@@ -44,22 +54,36 @@ public class ObservableCollection<T> extends ObservableIterable<T> implements Co
 		return collection.isEmpty();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean remove(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean removed = collection.remove(o);
+		if (removed)
+			fireModificationListeners((new ModificationEvent<T>(this)).kind(ModificationKind.Remove).item((T) o));
+		return removed;
 	}
 
 	@Override
 	public boolean removeAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean removed = true;
+		for (Object item : c)
+			removed = removed && remove(item);
+		return removed;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean retainAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		Object[] before = collection.toArray();
+		boolean retained = collection.retainAll(c);
+		if (retained)
+			for (Object item : before) {
+				if (c.contains(item))
+					continue;
+				fireModificationListeners(
+						(new ModificationEvent<T>(this)).kind(ModificationKind.Remove).item((T) item));
+			}
+		return retained;
 	}
 
 	@Override
@@ -73,7 +97,7 @@ public class ObservableCollection<T> extends ObservableIterable<T> implements Co
 	}
 
 	@Override
-	public <T> T[] toArray(T[] a) {
+	public <I> I[] toArray(I[] a) {
 		return collection.toArray(a);
 	}
 
