@@ -79,9 +79,11 @@ public class ObservablesTest {
 		// Write tests
 		observe.add("Testme");
 		observe.remove("Testme");
+		observe.removeAll(Arrays.asList("World"));
+		observe.addAll(Arrays.asList("Crazy"));
 		// Check events
 		ModificationEvent<String>[] events = listener.getEvents();
-		assertEquals(2, events.length);
+		assertEquals(4, events.length);
 		// First event
 		assertEquals(observe, events[0].getSource());
 		assertEquals(ModificationKind.Add, events[0].getKind());
@@ -90,6 +92,14 @@ public class ObservablesTest {
 		assertEquals(observe, events[1].getSource());
 		assertEquals(ModificationKind.Remove, events[1].getKind());
 		assertEquals("Testme", events[1].getItem());
+		// Third event
+		assertEquals(observe, events[2].getSource());
+		assertEquals(ModificationKind.Remove, events[2].getKind());
+		assertEquals("World", events[2].getItem());
+		// Fourth event
+		assertEquals(observe, events[3].getSource());
+		assertEquals(ModificationKind.Add, events[3].getKind());
+		assertEquals("Crazy", events[3].getItem());
 		// Release resources
 		listener.close();
 	}
