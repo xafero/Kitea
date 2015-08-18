@@ -96,7 +96,7 @@ public class ObservablesTest {
 		observe.clear();
 		// Check events
 		ModificationEvent<Entry<String, String>>[] events = listener.getEvents();
-		assertEquals(3, events.length);
+		assertEquals(4, events.length);
 		// First event
 		assertEquals(observe, events[0].getSource());
 		assertEquals(ModificationKind.Add, events[0].getKind());
@@ -109,9 +109,14 @@ public class ObservablesTest {
 		assertEquals("There", events[1].getItem().getValue());
 		// Third event
 		assertEquals(observe, events[2].getSource());
-		assertEquals(ModificationKind.Remove, events[2].getKind());
+		assertEquals(ModificationKind.Add, events[2].getKind());
 		assertEquals("TestMe", events[2].getItem().getKey());
 		assertEquals("is good?", events[2].getItem().getValue());
+		// Fourth event
+		assertEquals(observe, events[3].getSource());
+		assertEquals(ModificationKind.Remove, events[3].getKind());
+		assertEquals("TestMe", events[3].getItem().getKey());
+		assertEquals("is good?", events[3].getItem().getValue());
 		// Close this
 		listener.close();
 	}
