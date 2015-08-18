@@ -147,6 +147,10 @@ public class ObservablesTest {
 		assertEquals("World", events[2].getItem());
 		// Release resources
 		listener.close();
+		// Just print to call toString
+		System.out.println(Arrays.toString(events));
+		System.out.println(Arrays.toString(ModificationKind.values()));
+		assertEquals(ModificationKind.Add, ModificationKind.valueOf("Add"));
 	}
 
 	@Test
