@@ -1,10 +1,10 @@
 package com.xafero.kitea.collections;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.beans.SimpleBeanInfo;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,9 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.management.ListenerNotFoundException;
-
 import java.util.Set;
 
 import org.junit.Test;
@@ -171,10 +168,12 @@ public class ObservablesTest {
 		assertEquals(0, observe.lastIndexOf("Crazy"));
 		assertEquals(1, observe.subList(0, 1).size());
 		observe.add(0, null);
+		observe.set(0, null);
 		observe.remove(0);
+		observe.addAll(0, Arrays.asList("Testme"));
 		// Check events
 		ModificationEvent<String>[] events = listener.getEvents();
-		assertEquals(3, events.length);
+		assertEquals(4, events.length);
 		// First event
 		assertEquals(observe, events[0].getSource());
 		assertEquals(ModificationKind.Remove, events[0].getKind());
@@ -187,8 +186,27 @@ public class ObservablesTest {
 		assertEquals(observe, events[2].getSource());
 		assertEquals(ModificationKind.Add, events[2].getKind());
 		assertEquals("Crazy", events[2].getItem());
+		// Fourth event
+		assertEquals(observe, events[3].getSource());
+		assertEquals(ModificationKind.Add, events[3].getKind());
+		assertEquals("Testme", events[3].getItem());
 		// Release resources
 		listener.close();
+	}
+
+	@Test
+	public void testErrors() {
+		ObservableList<String> list = Observables.decorate(new LinkedList<String>());
+		try {
+			list.listIterator();
+		} catch (UnsupportedOperationException uoe) {
+			System.out.println(uoe.getMessage());
+		}
+		try {
+			list.listIterator(0);
+		} catch (UnsupportedOperationException uoe) {
+			System.out.println(uoe.getMessage());
+		}
 	}
 
 	@Test
