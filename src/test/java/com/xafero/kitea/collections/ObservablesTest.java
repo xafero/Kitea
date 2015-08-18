@@ -115,10 +115,28 @@ public class ObservablesTest {
 	}
 
 	@Test
-	public void testDecorateSet() {
+	public void testDecorateSet() throws IOException {
+		SimpleModificationListener<String> listener = new SimpleModificationListener<String>();
 		Set<String> set = new HashSet<String>(Arrays.asList("Hello", "World"));
 		ObservableSet<String> observe = Observables.decorate(set);
 		assertNotNull(observe);
+		observe.addModificationListener(listener);
+		// Write tests
+		observe.add("Hello");
+		observe.add("Hello");
+		observe.addAll(Arrays.asList("Hello"));
+		observe.retainAll(Arrays.asList("World"));
+		observe.remove("World");
+		observe.removeAll(Arrays.asList("World"));
+		// Check events
+		ModificationEvent<String>[] events = listener.getEvents();
+		assertEquals(1, events.length);
+		// First event
+		assertEquals(observe, events[0].getSource());
+		assertEquals(ModificationKind.Add, events[0].getKind());
+		assertEquals("Hello", events[0].getItem());
+		// Release resources
+		listener.close();
 	}
 
 	@Test
