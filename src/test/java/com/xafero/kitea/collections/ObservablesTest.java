@@ -41,6 +41,10 @@ public class ObservablesTest {
 		assertEquals(ModificationKind.Remove, events[0].getKind());
 		assertEquals("Hello", events[0].getOldItem());
 		assertEquals("World", events[1].getOldItem());
+		// Some tests about listeners
+		assertEquals(listener, observe.getModificationListeners()[0]);
+		observe.removeModificationListener(listener);
+		assertEquals(0, observe.getModificationListeners().length);
 	}
 
 	@Test
