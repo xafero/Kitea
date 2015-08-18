@@ -117,7 +117,7 @@ public class ObservablesTest {
 	@Test
 	public void testDecorateSet() throws IOException {
 		SimpleModificationListener<String> listener = new SimpleModificationListener<String>();
-		Set<String> set = new HashSet<String>(Arrays.asList("Hello", "World"));
+		Set<String> set = new HashSet<String>(Arrays.asList("World"));
 		ObservableSet<String> observe = Observables.decorate(set);
 		assertNotNull(observe);
 		observe.addModificationListener(listener);
@@ -130,11 +130,19 @@ public class ObservablesTest {
 		observe.removeAll(Arrays.asList("World"));
 		// Check events
 		ModificationEvent<String>[] events = listener.getEvents();
-		assertEquals(1, events.length);
+		assertEquals(3, events.length);
 		// First event
 		assertEquals(observe, events[0].getSource());
 		assertEquals(ModificationKind.Add, events[0].getKind());
 		assertEquals("Hello", events[0].getItem());
+		// Second event
+		assertEquals(observe, events[1].getSource());
+		assertEquals(ModificationKind.Remove, events[1].getKind());
+		assertEquals("Hello", events[1].getItem());
+		// Third event
+		assertEquals(observe, events[2].getSource());
+		assertEquals(ModificationKind.Remove, events[2].getKind());
+		assertEquals("World", events[2].getItem());
 		// Release resources
 		listener.close();
 	}

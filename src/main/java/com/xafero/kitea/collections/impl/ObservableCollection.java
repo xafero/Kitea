@@ -67,7 +67,7 @@ public class ObservableCollection<T> extends ObservableIterable<T> implements Co
 	public boolean removeAll(Collection<?> c) {
 		boolean removed = true;
 		for (Object item : c)
-			removed = removed && remove(item);
+			removed = removed &&  remove(item);
 		return removed;
 	}
 
