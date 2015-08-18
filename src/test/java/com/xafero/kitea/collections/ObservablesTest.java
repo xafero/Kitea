@@ -80,6 +80,7 @@ public class ObservablesTest {
 		Map<String, String> map = new HashMap<String, String>();
 		ObservableMap<String, String> observe = Observables.decorate(map);
 		assertNotNull(observe);
+		observe.addModificationListener(listener);
 		// Do something
 		observe.put("Hi", "There");
 		observe.remove("Hi");
