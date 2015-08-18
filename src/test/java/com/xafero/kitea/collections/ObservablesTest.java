@@ -75,9 +75,22 @@ public class ObservablesTest {
 		assertFalse(observe.isEmpty());
 		assertEquals(2, observe.size());
 		assertEquals(2, observe.toArray().length);
-		assertEquals(2, observe.toArray(new String[0]).length);		
+		assertEquals(2, observe.toArray(new String[0]).length);
 		// Write tests
-		// TODO: ???
+		observe.add("Testme");
+		observe.remove("Testme");
+		// Check events
+		ModificationEvent<String>[] events = listener.getEvents();
+		assertEquals(2, events.length);
+		// First event
+		assertEquals(observe, events[0].getSource());
+		assertEquals(ModificationKind.Add, events[0].getKind());
+		assertEquals("Testme", events[0].getItem());
+		// Second event
+		assertEquals(observe, events[1].getSource());
+		assertEquals(ModificationKind.Remove, events[1].getKind());
+		assertEquals("Testme", events[1].getItem());
+		// Release resources
 		listener.close();
 	}
 
