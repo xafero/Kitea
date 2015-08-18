@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.beans.SimpleBeanInfo;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -62,10 +63,22 @@ public class ObservablesTest {
 	}
 
 	@Test
-	public void testDecorateCollection() {
+	public void testDecorateCollection() throws IOException {
+		SimpleModificationListener<String> listener = new SimpleModificationListener<String>();
 		Collection<String> collection = new LinkedList<String>(Arrays.asList("Hello", "World"));
 		ObservableCollection<String> observe = Observables.decorate(collection);
 		assertNotNull(observe);
+		observe.addModificationListener(listener);
+		// Read-only things
+		assertTrue(observe.contains("Hello"));
+		assertTrue(observe.containsAll(Arrays.asList("World")));
+		assertFalse(observe.isEmpty());
+		assertEquals(2, observe.size());
+		assertEquals(2, observe.toArray().length);
+		assertEquals(2, observe.toArray(new String[0]).length);		
+		// Write tests
+		// TODO: ???
+		listener.close();
 	}
 
 	@Test

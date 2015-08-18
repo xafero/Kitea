@@ -31,20 +31,17 @@ public class ObservableCollection<T> extends ObservableIterable<T> implements Co
 
 	@Override
 	public boolean contains(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		return collection.contains(o);
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		return collection.containsAll(c);
 	}
 
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+		return collection.isEmpty();
 	}
 
 	@Override
@@ -67,20 +64,17 @@ public class ObservableCollection<T> extends ObservableIterable<T> implements Co
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		return collection.size();
 	}
 
 	@Override
 	public Object[] toArray() {
-		// TODO Auto-generated method stub
-		return null;
+		return collection.toArray();
 	}
 
 	@Override
 	public <T> T[] toArray(T[] a) {
-		// TODO Auto-generated method stub
-		return null;
+		return collection.toArray(a);
 	}
 
 	public static <E> ObservableCollection<E> wrap(Collection<E> collection) {
