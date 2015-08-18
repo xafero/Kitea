@@ -17,16 +17,25 @@ public class ObservableList<T> extends ObservableCollection<T> implements List<T
 		this.list = list;
 	}
 
+	protected boolean added(int index, T element) {
+		list.add(index, element);
+		if (element == null)
+			return false;
+		fireModificationListeners((new ModificationEvent<T>(this)).kind(ModificationKind.Add).item(element));
+		return true;
+	}
+
 	@Override
 	public void add(int index, T element) {
-		// TODO Auto-generated method stub
-
+		added(index, element);
 	}
 
 	@Override
 	public boolean addAll(int index, Collection<? extends T> c) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean good = true;
+		for (T item : c)
+			good = good && added(index, item);
+		return good;
 	}
 
 	@Override
@@ -46,14 +55,12 @@ public class ObservableList<T> extends ObservableCollection<T> implements List<T
 
 	@Override
 	public ListIterator<T> listIterator() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Crazy iterators are not supported!");
 	}
 
 	@Override
 	public ListIterator<T> listIterator(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Crazy iterators are not supported!");
 	}
 
 	@Override

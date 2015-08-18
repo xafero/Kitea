@@ -169,6 +169,9 @@ public class ObservablesTest {
 		assertEquals("Crazy", observe.get(0));
 		assertEquals(0, observe.indexOf("Crazy"));
 		assertEquals(0, observe.lastIndexOf("Crazy"));
+		assertEquals(1, observe.subList(0, 1).size());
+		observe.add(0, null);
+		observe.remove(0);
 		// Check events
 		ModificationEvent<String>[] events = listener.getEvents();
 		assertEquals(3, events.length);
