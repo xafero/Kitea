@@ -18,6 +18,17 @@ public class ObservablesTest {
 		Iterable<String> iterable = new LinkedList<String>(Arrays.asList("Hello", "World"));
 		ObservableIterable<String> observe = Observables.decorate(iterable);
 		assertNotNull(observe);
+		// First item
+		Iterator<String> it = observe.iterator();
+		assertTrue(it.hasNext());
+		assertEquals("Hello", it.next());
+		it.remove();
+		assertEquals(1, ((Collection<String>) iterable).size());
+		// Second item
+		assertTrue(it.hasNext());
+		assertEquals("World", it.next());
+		it.remove();
+		assertEquals(1, ((Collection<String>) iterable).isEmpty());
 	}
 
 	@Test
@@ -39,6 +50,8 @@ public class ObservablesTest {
 		List<String> list = new LinkedList<String>(Arrays.asList("Hello", "World"));
 		ObservableList<String> observe = Observables.decorate(list);
 		assertNotNull(observe);
+		// First item
+		assertEquals("World", list.remove(1));
 	}
 
 	@Test
