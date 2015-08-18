@@ -8,6 +8,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.xafero.kitea.collections.api.ModificationEvent;
+import com.xafero.kitea.collections.api.ModificationKind;
 import com.xafero.kitea.collections.impl.*;
 import com.xafero.kitea.collections.impl.ObservableIterable;
 
@@ -15,9 +17,12 @@ public class ObservablesTest {
 
 	@Test
 	public void testDecorateIterable() {
+		SimpleModificationListener<String> listener = new SimpleModificationListener<String>();
+		// Create enumerable
 		Iterable<String> iterable = new LinkedList<String>(Arrays.asList("Hello", "World"));
 		ObservableIterable<String> observe = Observables.decorate(iterable);
 		assertNotNull(observe);
+		observe.addModificationListener(listener);
 		// First item
 		Iterator<String> it = observe.iterator();
 		assertTrue(it.hasNext());
@@ -28,7 +33,14 @@ public class ObservablesTest {
 		assertTrue(it.hasNext());
 		assertEquals("World", it.next());
 		it.remove();
-		assertEquals(1, ((Collection<String>) iterable).isEmpty());
+		assertTrue(((Collection<String>) iterable).isEmpty());
+		// Check listener
+		ModificationEvent<String>[] events = listener.getEvents();
+		assertEquals(2, events.length);
+		assertEquals(observe, events[0].getSource());
+		assertEquals(ModificationKind.Remove, events[0].getKind());
+		assertEquals("Hello", events[0].getOldItem());
+		assertEquals("World", events[1].getOldItem());
 	}
 
 	@Test
