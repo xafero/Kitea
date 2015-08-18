@@ -82,7 +82,14 @@ public class ObservablesTest {
 		assertNotNull(observe);
 		observe.addModificationListener(listener);
 		// Do something
+		assertTrue(observe.isEmpty());
 		observe.put("Hi", "There");
+		assertEquals(1, observe.size());
+		assertEquals(1, observe.values().size());
+		assertEquals(1, observe.keySet().size());
+		assertEquals(1, observe.entrySet().size());
+		assertTrue(observe.containsKey("Hi"));
+		assertTrue(observe.containsValue("There"));
 		observe.remove("Hi");
 		// Check events
 		ModificationEvent<Entry<String, String>>[] events = listener.getEvents();
