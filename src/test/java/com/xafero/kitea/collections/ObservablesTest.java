@@ -8,6 +8,7 @@ import java.beans.SimpleBeanInfo;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -128,6 +129,7 @@ public class ObservablesTest {
 		observe.retainAll(Arrays.asList("World"));
 		observe.remove("World");
 		observe.removeAll(Arrays.asList("World"));
+		observe.retainAll(Collections.emptySet());
 		// Check events
 		ModificationEvent<String>[] events = listener.getEvents();
 		assertEquals(3, events.length);
