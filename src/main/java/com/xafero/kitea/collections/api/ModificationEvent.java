@@ -6,23 +6,23 @@ public final class ModificationEvent<T> extends EventObject {
 
 	private static final long serialVersionUID = 6005957767623784061L;
 
-	private T oldItem;
+	private T item;
 	private ModificationKind kind;
 
 	public ModificationEvent(Object source) {
 		super(source);
 	}
 
-	public T getOldItem() {
-		return oldItem;
+	public T getItem() {
+		return item;
 	}
 
 	public ModificationKind getKind() {
 		return kind;
 	}
 
-	public ModificationEvent<T> oldItem(T oldItem) {
-		this.oldItem = oldItem;
+	public ModificationEvent<T> item(T item) {
+		this.item = item;
 		return this;
 	}
 
@@ -33,7 +33,7 @@ public final class ModificationEvent<T> extends EventObject {
 
 	@Override
 	public String toString() {
-		return "ModificationEvent [" + (oldItem != null ? "oldItem=" + oldItem + ", " : "")
+		return "ModificationEvent [" + (item != null ? "oldItem=" + item + ", " : "")
 				+ (kind != null ? "kind=" + kind : "") + "]";
 	}
 }

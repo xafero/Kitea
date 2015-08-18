@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 
-public class ObservableList<T> extends ObservableCollection<T>implements List<T> {
+public class ObservableList<T> extends ObservableCollection<T> implements List<T> {
 
 	protected final List<T> list;
 

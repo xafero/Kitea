@@ -2,6 +2,7 @@ package com.xafero.kitea.collections;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.*;
 
 import org.junit.AfterClass;
@@ -12,11 +13,13 @@ import com.xafero.kitea.collections.api.ModificationEvent;
 import com.xafero.kitea.collections.api.ModificationKind;
 import com.xafero.kitea.collections.impl.*;
 import com.xafero.kitea.collections.impl.ObservableIterable;
+import java.util.Map.*;
+import java.util.AbstractMap.*;
 
 public class ObservablesTest {
 
 	@Test
-	public void testDecorateIterable() {
+	public void testDecorateIterable() throws IOException {
 		SimpleModificationListener<String> listener = new SimpleModificationListener<String>();
 		// Create enumerable
 		Iterable<String> iterable = new LinkedList<String>(Arrays.asList("Hello", "World"));
@@ -39,12 +42,13 @@ public class ObservablesTest {
 		assertEquals(2, events.length);
 		assertEquals(observe, events[0].getSource());
 		assertEquals(ModificationKind.Remove, events[0].getKind());
-		assertEquals("Hello", events[0].getOldItem());
-		assertEquals("World", events[1].getOldItem());
+		assertEquals("Hello", events[0].getItem());
+		assertEquals("World", events[1].getItem());
 		// Some tests about listeners
 		assertEquals(listener, observe.getModificationListeners()[0]);
 		observe.removeModificationListener(listener);
 		assertEquals(0, observe.getModificationListeners().length);
+		listener.close();
 	}
 
 	@Test
@@ -71,9 +75,27 @@ public class ObservablesTest {
 	}
 
 	@Test
-	public void testDecorateMap() {
+	public void testDecorateMap() throws IOException {
+		SimpleModificationListener<Entry<String, String>> listener = new SimpleModificationListener<Entry<String, String>>();
 		Map<String, String> map = new HashMap<String, String>();
 		ObservableMap<String, String> observe = Observables.decorate(map);
 		assertNotNull(observe);
+		// Do something
+		observe.put("Hi", "There");
+		observe.remove("Hi");
+		// Check events
+		ModificationEvent<Entry<String, String>>[] events = listener.getEvents();
+		assertEquals(2, events.length);
+		// First event
+		assertEquals(observe, events[0].getSource());
+		assertEquals(ModificationKind.Add, events[0].getKind());
+		assertEquals("Hi", events[0].getItem().getKey());
+		assertEquals("There", events[0].getItem().getValue());
+		// Second event
+		assertEquals(observe, events[1].getSource());
+		assertEquals(ModificationKind.Remove, events[1].getKind());
+		assertEquals("Hi", events[1].getItem().getKey());
+		assertEquals("There", events[1].getItem().getValue());
+		listener.close();
 	}
 }
