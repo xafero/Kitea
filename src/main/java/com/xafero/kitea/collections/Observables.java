@@ -1,6 +1,7 @@
 package com.xafero.kitea.collections;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,5 +35,15 @@ public final class Observables {
 
 	public static <K, V> ObservableMap<K, V> decorate(Map<K, V> map) {
 		return ObservableMap.wrap(map);
+	}
+
+	public static <K, V> Map<K, V> toMap(K[] keys, V[] values) {
+		Map<K, V> map = new LinkedHashMap<K, V>();
+		for (int i = 0; i < keys.length && i < values.length; i++) {
+			K key = keys[i];
+			V value = values[i];
+			map.put(key, value);
+		}
+		return map;
 	}
 }
