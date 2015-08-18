@@ -16,6 +16,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.management.ListenerNotFoundException;
+
 import java.util.Set;
 
 import org.junit.Test;
@@ -154,12 +157,35 @@ public class ObservablesTest {
 	}
 
 	@Test
-	public void testDecorateList() {
+	public void testDecorateList() throws IOException {
+		SimpleModificationListener<String> listener = new SimpleModificationListener<String>();
 		List<String> list = new LinkedList<String>(Arrays.asList("Hello", "World"));
 		ObservableList<String> observe = Observables.decorate(list);
 		assertNotNull(observe);
+		observe.addModificationListener(listener);
 		// First item
-		assertEquals("World", list.remove(1));
+		observe.remove(1);
+		observe.set(0, "Crazy");
+		assertEquals("Crazy", observe.get(0));
+		assertEquals(0, observe.indexOf("Crazy"));
+		assertEquals(0, observe.lastIndexOf("Crazy"));
+		// Check events
+		ModificationEvent<String>[] events = listener.getEvents();
+		assertEquals(3, events.length);
+		// First event
+		assertEquals(observe, events[0].getSource());
+		assertEquals(ModificationKind.Remove, events[0].getKind());
+		assertEquals("World", events[0].getItem());
+		// Second event
+		assertEquals(observe, events[1].getSource());
+		assertEquals(ModificationKind.Remove, events[1].getKind());
+		assertEquals("Hello", events[1].getItem());
+		// Third event
+		assertEquals(observe, events[2].getSource());
+		assertEquals(ModificationKind.Add, events[2].getKind());
+		assertEquals("Crazy", events[2].getItem());
+		// Release resources
+		listener.close();
 	}
 
 	@Test

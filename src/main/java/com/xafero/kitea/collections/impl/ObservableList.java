@@ -1,8 +1,12 @@
 package com.xafero.kitea.collections.impl;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+
+import com.xafero.kitea.collections.api.ModificationEvent;
+import com.xafero.kitea.collections.api.ModificationKind;
 
 public class ObservableList<T> extends ObservableCollection<T> implements List<T> {
 
@@ -27,20 +31,17 @@ public class ObservableList<T> extends ObservableCollection<T> implements List<T
 
 	@Override
 	public T get(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		return list.get(index);
 	}
 
 	@Override
 	public int indexOf(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
+		return list.indexOf(o);
 	}
 
 	@Override
 	public int lastIndexOf(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
+		return list.lastIndexOf(o);
 	}
 
 	@Override
@@ -57,20 +58,25 @@ public class ObservableList<T> extends ObservableCollection<T> implements List<T
 
 	@Override
 	public T remove(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		T removed = list.remove(index);
+		if (removed != null)
+			fireModificationListeners((new ModificationEvent<T>(this)).kind(ModificationKind.Remove).item(removed));
+		return removed;
 	}
 
 	@Override
 	public T set(int index, T element) {
-		// TODO Auto-generated method stub
-		return null;
+		T replaced = list.set(index, element);
+		if (replaced != null)
+			fireModificationListeners((new ModificationEvent<T>(this)).kind(ModificationKind.Remove).item(replaced));
+		if (element != null)
+			fireModificationListeners((new ModificationEvent<T>(this)).kind(ModificationKind.Add).item(element));
+		return replaced;
 	}
 
 	@Override
 	public List<T> subList(int fromIndex, int toIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		return Collections.unmodifiableList(list.subList(fromIndex, toIndex));
 	}
 
 	public static <E> ObservableList<E> wrap(List<E> list) {

@@ -33,7 +33,6 @@ public final class ModificationEvent<T> extends EventObject {
 
 	@Override
 	public String toString() {
-		return "ModificationEvent [" + (item != null ? "oldItem=" + item + ", " : "")
-				+ (kind != null ? "kind=" + kind : "") + "]";
+		return "ModificationEvent [item=" + item + ", kind=" + kind + "]";
 	}
 }
