@@ -1,20 +1,30 @@
 package com.xafero.kitea.collections;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.xafero.kitea.collections.api.ModificationEvent;
 import com.xafero.kitea.collections.api.ModificationKind;
-import com.xafero.kitea.collections.impl.*;
+import com.xafero.kitea.collections.impl.ObservableCollection;
 import com.xafero.kitea.collections.impl.ObservableIterable;
-import java.util.Map.*;
-import java.util.AbstractMap.*;
+import com.xafero.kitea.collections.impl.ObservableList;
+import com.xafero.kitea.collections.impl.ObservableMap;
+import com.xafero.kitea.collections.impl.ObservableSet;
 
 public class ObservablesTest {
 
@@ -96,9 +106,10 @@ public class ObservablesTest {
 		observe.clear();
 		observe.put("Crazy", "seeing");
 		observe.put("Crazy", "being");
+		observe.put("Crazy", null);
 		// Check events
 		ModificationEvent<Entry<String, String>>[] events = listener.getEvents();
-		assertEquals(7, events.length);
+		assertEquals(8, events.length);
 		// First event
 		assertEquals(observe, events[0].getSource());
 		assertEquals(ModificationKind.Add, events[0].getKind());
